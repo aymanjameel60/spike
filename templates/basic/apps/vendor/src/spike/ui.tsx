@@ -1,4 +1,7 @@
 import type { ReactNode } from "react"
+import { Button as ShadcnButton } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
+import { Card as ShadcnCard, CardContent } from "../components/ui/card"
 
 type ButtonTone = "primary" | "secondary" | "danger" | "ghost"
 type StatusTone = "success" | "warning" | "danger" | "muted" | "info"
@@ -12,7 +15,7 @@ export function PageHeader({ title, description, actions }: { title: ReactNode; 
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`spike-vendor-card ${className}`.trim()}>{children}</section>
+  return <ShadcnCard className={className}><CardContent className="grid gap-4 p-5">{children}</CardContent></ShadcnCard>
 }
 
 export function FormGrid({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -28,17 +31,17 @@ export function Actions({ children }: { children: ReactNode }) {
 }
 
 export function Button({ children, tone = "primary", className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { tone?: ButtonTone }) {
-  const cls = tone === "secondary" || tone === "ghost" ? "spike-secondary-button" : tone === "danger" ? "spike-primary-button spike-danger-button" : "spike-primary-button"
-  return <button className={`${cls} ${className}`.trim()} {...props}>{children}</button>
+  const variant = tone === "danger" ? "destructive" : tone === "secondary" ? "secondary" : tone === "ghost" ? "ghost" : "default"
+  return <ShadcnButton variant={variant} className={className} {...props}>{children}</ShadcnButton>
 }
 
 export function Status({ children, tone = "muted" }: { children: ReactNode; tone?: StatusTone }) {
-  const cls = tone === "success" ? "approved" : tone === "danger" ? "rejected" : tone === "warning" ? "pending" : tone === "info" ? "proposed" : ""
-  return <span className={`spike-status-pill ${cls}`.trim()}>{children}</span>
+  const variant = tone === "success" ? "success" : tone === "danger" ? "destructive" : tone === "warning" ? "warning" : tone === "info" ? "info" : "secondary"
+  return <Badge variant={variant}>{children}</Badge>
 }
 
 export function Message({ children }: { children: ReactNode }) {
-  return <div className="spike-vendor-note">{children}</div>
+  return <div className="rounded-xl border border-border bg-muted px-4 py-3 text-sm font-medium text-foreground">{children}</div>
 }
 
 export function Empty({ children }: { children: ReactNode }) {
