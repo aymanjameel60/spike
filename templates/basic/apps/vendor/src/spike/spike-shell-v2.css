@@ -1,0 +1,41 @@
+/* Spike shell v2 — vendor dashboard visual layer */
+:root{--spike-red:#ad0009;--spike-bg:#f4f4f4;--spike-card:#fff;--spike-soft:#ececec;--spike-text:#111;--spike-muted:#8d8d92;--spike-line:rgba(127,127,127,.16);--spike-r:16px;--spike-control:40px}
+#root{font-family:"Graphik Arabic","GraphikArabic",Tahoma,Arial,sans-serif!important}
+#root *{box-sizing:border-box}
+html:not(.dark) #root{background:var(--spike-bg)!important;color:var(--spike-text)!important}
+html.dark #root{background:#121214!important}
+#root main{background:transparent!important;padding-bottom:32px!important}
+#root main>div{max-width:1440px;margin-inline:auto}
+#root aside{width:236px!important;min-width:236px!important;padding:10px 10px 12px!important;border-inline-end:1px solid var(--spike-line)!important;background:color-mix(in srgb,var(--bg-base,#fff) 96%,transparent)!important}
+#root aside nav{display:flex!important;flex-direction:column!important;gap:2px!important}
+#root aside a,#root aside button{min-height:38px!important;border-radius:12px!important;padding-inline:12px!important;font-size:13px!important;font-weight:600!important}
+#root aside a:hover,#root aside button:hover{background:rgba(127,127,127,.07)!important}
+#root aside [aria-current="page"],#root aside a[data-active="true"],#root aside button[data-active="true"]{background:rgba(173,0,9,.10)!important;color:var(--spike-red)!important;font-weight:750!important}
+#root aside svg{width:18px!important;height:18px!important;stroke-width:1.8!important}
+#root header{min-height:56px!important;border-bottom:1px solid var(--spike-line)!important;background:color-mix(in srgb,var(--bg-base,#fff) 96%,transparent)!important;box-shadow:none!important}
+#root main [class*="px-8"],#root main [class*="px-6"],#root main [class*="px-4"]{padding-left:24px!important;padding-right:24px!important}
+#root main [class*="py-8"],#root main [class*="py-6"]{padding-top:20px!important;padding-bottom:20px!important}
+#root main [class*="rounded-lg"],#root main [class*="rounded-xl"],#root main [class*="rounded-2xl"]{border-radius:var(--spike-r)!important;border-color:var(--spike-line)!important;box-shadow:none!important}
+#root main [class*="shadow"]{box-shadow:none!important}
+#root h1{font-size:24px!important;font-weight:750!important;line-height:1.3!important}
+#root h2{font-size:18px!important;font-weight:700!important}
+#root h3{font-size:15px!important;font-weight:700!important}
+#root p,#root label,#root td,#root th,#root button,#root input,#root select,#root textarea{font-family:inherit!important}
+#root input:not([type=checkbox]):not([type=radio]),#root select,#root textarea{min-height:var(--spike-control)!important;border-radius:12px!important;border-color:var(--spike-line)!important;box-shadow:none!important}
+#root input:not([type=checkbox]):not([type=radio]):focus,#root select:focus,#root textarea:focus{border-color:rgba(173,0,9,.46)!important;box-shadow:0 0 0 3px rgba(173,0,9,.08)!important;outline:none!important}
+#root button,#root [role=button]{border-radius:12px!important;font-weight:650!important}
+#root table{border-collapse:separate!important;border-spacing:0!important}
+#root thead{background:rgba(127,127,127,.035)!important}
+#root th{height:44px!important;color:var(--spike-muted)!important;font-size:12px!important;font-weight:650!important;padding:10px 14px!important}
+#root td{height:50px!important;padding:10px 14px!important;border-bottom:1px solid var(--spike-line)!important;font-size:13px!important}
+#root tbody tr:last-child td{border-bottom:0!important}
+#root tbody tr:hover{background:rgba(127,127,127,.035)!important}
+#root [role=dialog],#root dialog{border-radius:24px!important;border:1px solid var(--spike-line)!important;box-shadow:0 24px 80px rgba(0,0,0,.22)!important}
+#root [data-radix-popper-content-wrapper]>*{border-radius:16px!important;border-color:var(--spike-line)!important}
+#root [class*="badge"],#root [class*="Badge"]{border-radius:999px!important;padding-inline:8px!important;font-weight:700!important}
+.spike-vendor-page,.spike-page,.spike-ui-page{max-width:1440px!important;padding:24px!important}
+.spike-vendor-card,.spike-card,.spike-ui-card{border-radius:16px!important;border:1px solid var(--spike-line)!important;box-shadow:none!important}
+.spike-primary-link,.spike-primary-button,.spike-btn,.spike-ui-btn{border-radius:12px!important;min-height:40px!important}
+.spike-table-card,.spike-ui-table-card{border-radius:16px!important;overflow:hidden!important}
+@media(max-width:1024px){#root aside{width:210px!important;min-width:210px!important}}
+@media(max-width:800px){#root main [class*="px-8"],#root main [class*="px-6"],#root main [class*="px-4"]{padding-left:16px!important;padding-right:16px!important}.spike-vendor-page,.spike-page,.spike-ui-page{padding:16px!important}}
