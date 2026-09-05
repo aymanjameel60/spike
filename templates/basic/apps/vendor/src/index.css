@@ -22,7 +22,7 @@
 }
 
 :root {
-  --background: #f4f4f4;
+  --background: #ededed;
   --foreground: #090909;
   --card: #ffffff;
   --card-foreground: #090909;
@@ -40,12 +40,13 @@
   color-scheme: light;
 }
 
-html,body,#root{min-height:100%;background:var(--background);color:var(--foreground)}
+html,body,#root{min-height:100%;background:#ededed!important;color:var(--foreground)}
 html{direction:rtl;color-scheme:light}
 body,input,textarea,select,button{font-family:"Graphik Arabic",Tahoma,Arial,sans-serif}
 .dark{color-scheme:light!important}
+#root main{background:#ededed!important}
 
-.spike-vendor-page,.spike-page{width:100%;max-width:1440px;margin:0 auto;padding:24px;display:grid;gap:18px;direction:rtl}
+.spike-vendor-page,.spike-page{width:100%;max-width:1440px;margin:0 auto;padding:24px;display:grid;gap:18px;direction:rtl;background:#ededed}
 .spike-page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
 .spike-page-header h1,.spike-title{margin:0;font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.2px}
 .spike-page-header p,.spike-muted,.spike-muted-text{color:var(--muted-foreground)}
