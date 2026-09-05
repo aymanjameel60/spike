@@ -544,6 +544,15 @@ export type Routes = {
             };
             returns: typeof import("../src/api/admin/spike/returns/route");
             settings: typeof import("../src/api/admin/spike/settings/route");
+            storeProfileUpdates: {
+                $sellerId: typeof import("../src/api/admin/spike/store-profile-updates/[sellerId]/route");
+            };
+            vendorApplications: {
+                $id: typeof import("../src/api/admin/spike/vendor-applications/[id]/route");
+            };
+            vendorInvites: typeof import("../src/api/admin/spike/vendor-invites/route") & {
+                $token: typeof import("../src/api/admin/spike/vendor-invites/[token]/route");
+            };
         };
     };
     auth: {
@@ -685,8 +694,12 @@ export type Routes = {
             notifications: typeof import("../src/api/store/spike/notifications/route") & {
                 $id: typeof import("../src/api/store/spike/notifications/[id]/route");
             };
+            orderPaymentState: typeof import("../src/api/store/spike/order-payment-state/route");
             paymentReceipts: typeof import("../src/api/store/spike/payment-receipts/route");
             returns: typeof import("../src/api/store/spike/returns/route");
+            vendorInvite: {
+                $token: typeof import("../src/api/store/spike/vendor-invite/[token]/route");
+            };
         };
     };
     vendor: {

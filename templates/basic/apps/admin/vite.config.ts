@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite"
 import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 import { createRequire } from "node:module"
 
 const require = createRequire(import.meta.url)
@@ -12,6 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      tailwindcss(),
       mercurDashboardPlugin({
         medusaConfigPath: "../../packages/api/medusa-config.ts",
         name: "Spike",

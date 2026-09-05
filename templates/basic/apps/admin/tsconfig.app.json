@@ -18,7 +18,13 @@
     // form a workspace cycle — packages/api devDepends on this app so its sources travel
     // with the API through workspace-graph pruning (e.g. the Medusa Cloud builder).
     "paths": {
-      "@acme/api/_generated": ["../../packages/api/.mercur/routes.d.ts"]
+      " "@acme/api/_generated": ["../../packages/api/.mercur/routes.d.ts"],
+  "@/*": ["./src/*"],
+  "@/components/*": ["./src/components/*"],
+  "@/components/ui/*": ["./src/components/ui/*"],
+  "@/lib/*": ["./src/lib/*"],
+  "@/hooks/*": ["./src/hooks/*"]
+"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
