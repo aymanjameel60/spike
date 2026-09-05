@@ -4,8 +4,9 @@
   "version": "2.3.3",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 7001",
-    "build": "tsc -b && vite build",
+    "build:css": "tailwindcss -i ./src/index.css -o ./src/spike-tailwind.css --minify",
+    "dev": "bun run build:css && vite --port 7001",
+    "build": "bun run build:css && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 7001"
   },
@@ -19,7 +20,7 @@
     "react-router-dom": "7.18.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/cli": "^4.3.3",
     "@types/node": "^24.10.1",
     "tailwindcss": "^4.3.3"
   }
