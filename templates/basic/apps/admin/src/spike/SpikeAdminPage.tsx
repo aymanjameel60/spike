@@ -1,30 +1,11 @@
-import { useEffect, useMemo, useState } from "react"
-import { Link, useSearchParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { Link, useSearchParams } from "react-router"
 import "./spike-admin.css"
 
 declare const __BACKEND_URL__: string
 
 type Tab = "overview" | "vendors" | "currencies" | "commission" | "returns"
 type Settings = Record<string, any>
-
-type Banner = {
-  id: string
-  title: string
-  image_url: string
-  action_type: "none" | "product" | "category" | "store" | "collection" | "offers" | "url"
-  target: string
-  enabled: boolean
-  sort_order: number
-}
-
-type BankAccount = {
-  id: string
-  name: string
-  account_name: string
-  account_number: string
-  instructions: string
-  enabled: boolean
-}
 
 type SellerRequest = {
   id: string
@@ -344,59 +325,7 @@ function VendorRequests() {
   )
 }
 
-function Banners({ settings, set }: { settings: Settings; set: (key: string, value: any) => void }) {
-  const items: Banner[] = Array.isArray(settings.banner_items) ? settings.banner_items : []
-  const sorted = useMemo(() => [...items].sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0)), [items])
-  const update = (id: string, patch: Partial<Banner>) => set("banner_items", items.map((item) => item.id === id ? { ...item, ...patch } : item))
-  const add = () => set("banner_items", [...items, { id: `banner_${Date.now()}`, title: "بانر جديد", image_url: "", action_type: "none", target: "", enabled: true, sort_order: items.length + 1 }])
-  const remove = (id: string) => set("banner_items", items.filter((item) => item.id !== id))
-  const uploadImage = async (id: string, file?: File | null) => {
-    if (!file) return
-    const form = new FormData()
-    form.append("files", file)
-    const response = await fetch(`${backendUrl()}/admin/uploads`, { method: "POST", credentials: "include", body: form })
-    const data = await response.json().catch(() => ({}))
-    if (!response.ok) throw new Error(data?.message || "تعذر رفع الصورة")
-    const url = data?.files?.[0]?.url || data?.uploads?.[0]?.url || data?.file?.url
-    if (!url) throw new Error("تم رفع الملف لكن لم يرجع رابط الصورة")
-    update(id, { image_url: url })
-  }
 
-  return (
-    <>
-      <div className="spike-section-head">
-        <div><h2>بانرات الرئيسية</h2><p>ترتبط بمنتج أو فئة أو متجر أو Collection أو رابط خارجي.</p></div>
-        <button className="spike-primary" onClick={add}>إضافة بانر</button>
-      </div>
-      <div className="spike-stack">
-        {sorted.length === 0 && <Card><Empty text="لم تتم إضافة بانرات بعد." /></Card>}
-        {sorted.map((banner) => (
-          <Card key={banner.id}>
-            <div className="spike-row-head">
-              <strong>{banner.title || "بانر"}</strong>
-              <div className="spike-actions">
-                <label className="spike-check"><input type="checkbox" checked={banner.enabled} onChange={(e) => update(banner.id, { enabled: e.target.checked })} /> فعال</label>
-                <button className="spike-link-danger" onClick={() => remove(banner.id)}>حذف</button>
-              </div>
-            </div>
-            <div className="spike-form-grid">
-              <Field label="العنوان"><input value={banner.title} onChange={(e) => update(banner.id, { title: e.target.value })} /></Field>
-              <Field label="صورة البنر"><input type="file" accept="image/*" onChange={(e) => { void uploadImage(banner.id, e.target.files?.[0]).catch((err) => alert(err.message)) }} />{banner.image_url && <small dir="ltr">{banner.image_url}</small>}</Field>
-              <Field label="الترتيب"><input type="number" value={banner.sort_order} onChange={(e) => update(banner.id, { sort_order: Number(e.target.value) || 0 })} /></Field>
-              <Field label="عند الضغط">
-                <select value={banner.action_type} onChange={(e) => update(banner.id, { action_type: e.target.value as Banner["action_type"] })}>
-                  <option value="none">بدون إجراء</option><option value="product">منتج</option><option value="category">فئة</option><option value="store">متجر</option><option value="collection">مجموعة</option><option value="offers">قسم الخصومات</option><option value="url">رابط خارجي</option>
-                </select>
-              </Field>
-              <Field label="الوجهة / ID"><input dir="ltr" value={banner.target} onChange={(e) => update(banner.id, { target: e.target.value })} /></Field>
-            </div>
-          </Card>
-        ))}
-      </div>
-      <div className="spike-inline-note">واجهة العميل تقرأ البنرات المفعلة من <code>/store/spike/content</code>.</div>
-    </>
-  )
-}
 
 function Currencies({ settings, set }: { settings: Settings; set: (key: string, value: any) => void }) {
   const enabled: string[] = Array.isArray(settings.enabled_currencies) ? settings.enabled_currencies : []
@@ -422,47 +351,7 @@ function Currencies({ settings, set }: { settings: Settings; set: (key: string, 
   )
 }
 
-function Payments({ settings, set }: { settings: Settings; set: (key: string, value: any) => void }) {
-  const accounts: BankAccount[] = Array.isArray(settings.bank_accounts) ? settings.bank_accounts : []
-  const [receipts, setReceipts] = useState<any[]>([])
-  const loadReceipts = () => apiJson("/admin/spike/payment-receipts").then((d) => setReceipts(d.receipts || [])).catch(() => setReceipts([]))
-  useEffect(() => { void loadReceipts() }, [])
-  const setReceiptStatus = async (id: string, status: string) => { await apiJson(`/admin/spike/payment-receipts/${id}`, { method: "POST", body: JSON.stringify({ status }) }); await loadReceipts() }
-  const update = (id: string, patch: Partial<BankAccount>) => set("bank_accounts", accounts.map((item) => item.id === id ? { ...item, ...patch } : item))
-  const remove = (id: string) => set("bank_accounts", accounts.filter((item) => item.id !== id))
-  const add = () => set("bank_accounts", [...accounts, { id: `account_${Date.now()}`, name: "تحويل مالي", account_name: "", account_number: "", instructions: "", enabled: true }])
 
-  return (
-    <>
-      <section className="spike-grid two">
-        <Card title="طرق الدفع عند الإطلاق">
-          <Toggle label="الدفع عند الاستلام" value={!!settings.cod_enabled} onChange={(value) => set("cod_enabled", value)} />
-          <Toggle label="التحويل المالي اليدوي" value={!!settings.bank_transfer_enabled} onChange={(value) => set("bank_transfer_enabled", value)} />
-        </Card>
-        <Card title="مبدأ التشغيل"><p className="spike-muted">نحافظ على الدفع بسيطًا في الإصدار الأول، ثم يمكن إضافة بوابات إلكترونية بدون تغيير بنية هذه الإعدادات.</p></Card>
-      </section>
-      <div className="spike-section-head"><div><h2>حسابات التحويل</h2><p>تظهر للعميل عند اختيار التحويل المالي اليدوي.</p></div><button className="spike-primary" onClick={add}>إضافة حساب</button></div>
-      <div className="spike-stack">
-        {accounts.length === 0 && <Card><Empty text="لا توجد حسابات تحويل." /></Card>}
-        {accounts.map((account) => (
-          <Card key={account.id}>
-            <div className="spike-row-head"><strong>{account.name || "حساب تحويل"}</strong><div className="spike-actions"><label className="spike-check"><input type="checkbox" checked={account.enabled} onChange={(e) => update(account.id, { enabled: e.target.checked })} /> فعال</label><button className="spike-link-danger" onClick={() => remove(account.id)}>حذف</button></div></div>
-            <div className="spike-form-grid">
-              <Field label="اسم الطريقة"><input value={account.name} onChange={(e) => update(account.id, { name: e.target.value })} /></Field>
-              <Field label="اسم المستفيد"><input value={account.account_name} onChange={(e) => update(account.id, { account_name: e.target.value })} /></Field>
-              <Field label="رقم الحساب / المحفظة"><input dir="ltr" value={account.account_number} onChange={(e) => update(account.id, { account_number: e.target.value })} /></Field>
-              <Field label="تعليمات التحويل"><input value={account.instructions} onChange={(e) => update(account.id, { instructions: e.target.value })} /></Field>
-            </div>
-          </Card>
-        ))}
-      </div>
-      <div className="spike-section-head"><div><h2>إيصالات التحويل</h2><p>الإيصالات التي يرفعها العملاء عند اختيار الحوالة المالية.</p></div></div>
-      <Card>
-        {receipts.length === 0 ? <Empty text="لا توجد إيصالات حتى الآن." /> : <table className="spike-table"><thead><tr><th>الطلب / السلة</th><th>الإيصال</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>{receipts.slice(0,100).map((r) => <tr key={r.id}><td>{r.order_id ? `#${r.order_id}` : r.cart_id}</td><td><a href={`${backendUrl()}${r.receipt_url}`} target="_blank" rel="noreferrer">فتح الصورة</a></td><td>{r.status}</td><td><div className="spike-actions"><button className="spike-primary" onClick={() => void setReceiptStatus(r.id, "approved")}>اعتماد</button><button className="spike-link-danger" onClick={() => void setReceiptStatus(r.id, "rejected")}>رفض</button></div></td></tr>)}</tbody></table>}
-      </Card>
-    </>
-  )
-}
 
 function Commission({ settings, set }: { settings: Settings; set: (key: string, value: any) => void }) {
   return (
@@ -513,3 +402,7 @@ function Stat({ title, value }: { title: string; value: number | null | undefine
 function Empty({ text }: { text: string }) {
   return <div className="spike-empty">{text}</div>
 }
+
+
+
+
