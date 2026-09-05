@@ -1,0 +1,5 @@
+import type{MedusaRequest,MedusaResponse}from'@medusajs/framework/http'
+import{randomBytes}from'crypto'
+const PREFIX='vendor_invite:'
+export async function GET(req:MedusaRequest,res:MedusaResponse){const sp=req.scope.resolve('spike')as any;const rows=await sp.listSpikeSettings({},{take:1000,order:{created_at:'DESC'}});const invites=rows.filter((r:any)=>String(r.key||'').startsWith(PREFIX)).map((r:any)=>({token:String(r.key).slice(PREFIX.length),...(r.value||{})}));res.json({invites})}
+export async function POST(req:MedusaRequest,res:MedusaResponse){const sp=req.scope.resolve('spike')as any;const token=randomBytes(18).toString('hex');const value={status:'open',created_at:new Date().toISOString(),application:null,review:null};await sp.createSpikeSettings({key:`${PREFIX}${token}`,value});const base=String(process.env.BACKEND_URL||process.env.MEDUSA_BACKEND_URL||'http://localhost:9000').replace(/\/$/,'');res.status(201).json({token,url:`${base}/store/spike/vendor-invite/${token}`,...value})}
