@@ -5,7 +5,7 @@ import "./spike/vendor-spike.css";
 import "./spike/spike-system-ui.css";
 import "./spike/ui-components.css";
 import "./spike/spike-shell-v2.css";
-import "./index.css";
+import "./spike-tailwind.css";
 import App from "@mercurjs/vendor";
 import ExchangeBar from "./spike/ExchangeBar";
 
