@@ -1,1 +1,138 @@
-import{useEffect,useState}from'react';import type{RouteConfig}from'@mercurjs/dashboard-sdk';import'../../spike/vendor-spike.css';declare const __BACKEND_URL__:string;export const config:RouteConfig={label:'طلباتي',rank:12};const api=async(p:string,i?:RequestInit)=>{const r=await fetch(`${__BACKEND_URL__}${p}`,{credentials:'include',...i,headers:{...(i?.body?{'content-type':'application/json'}:{}),...(i?.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||`HTTP ${r.status}`);return d};const states=[['under_review','قيد المراجعة'],['processing','قيد التجهيز'],['shipping','قيد التوصيل'],['delivered','تم التوصيل']];export default function P(){const[x,setX]=useState<any[]>([]),[o,setO]=useState<any>(null),[m,setM]=useState('');const load=()=>api('/vendor/spike/orders').then(d=>setX(d.orders||[]));useEffect(()=>{load().catch(e=>setM(e.message))},[]);const status=async(v:string)=>{await api(`/vendor/spike/orders/${o.id}/status`,{method:'POST',body:JSON.stringify({status:v})});setO({...o,seller_status:v});setM('تم تحديث الحالة وإرسال إشعار للعميل');load()};return <div dir="rtl" className="spike-vendor-page"><h1>طلباتي</h1><p>تظهر هنا منتجات متجرك فقط. اعتماد الحوالة يتم من إدارة المنصة.</p>{m&&<p>{m}</p>}<table className="spike-vendor-table"><thead><tr><th>الطلب</th><th>العميل</th><th>حصتك</th><th>الحالة</th><th></th></tr></thead><tbody>{x.map(a=><tr key={a.id}><td>#{a.display_id||a.id}</td><td>{a.shipping_address?.first_name||a.email||'—'}<br/><small>{a.shipping_address?.phone||''}</small></td><td>{a.seller_subtotal} {a.currency_code}</td><td>{states.find(s=>s[0]===a.seller_status)?.[1]||a.seller_status}</td><td><button onClick={()=>setO(a)}>فتح</button></td></tr>)}</tbody></table>{o&&<div className="spike-modal-backdrop" onMouseDown={()=>setO(null)}><div className="spike-edit-modal" onMouseDown={e=>e.stopPropagation()}><h2>طلب #{o.display_id||o.id}</h2><p><b>العميل:</b> {[o.shipping_address?.first_name,o.shipping_address?.last_name].filter(Boolean).join(' ')}</p><p><b>الهاتف:</b> {o.shipping_address?.phone||'—'} {o.shipping_address?.phone&&<a href={`https://wa.me/${String(o.shipping_address.phone).replace(/\D/g,'')}`} target="_blank">واتساب</a>}</p><p><b>العنوان:</b> {[o.shipping_address?.province,o.shipping_address?.city,o.shipping_address?.address_1].filter(Boolean).join(' - ')}</p><label>حالة الجزء الخاص بمتجرك<select value={o.seller_status} onChange={e=>status(e.target.value)}>{states.map(s=><option key={s[0]} value={s[0]}>{s[1]}</option>)}</select></label><h3>منتجاتك</h3>{o.items.map((i:any)=><p key={i.id}>{i.title} × {i.quantity}</p>)}<button onClick={()=>setO(null)}>إغلاق</button></div></div>}</div>}
+import { useEffect, useState } from "react"
+import type { RouteConfig } from "@mercurjs/dashboard-sdk"
+import { Actions, Button, Card, Empty, Field, Message, Page, PageHeader, Status } from "../../spike/ui"
+
+declare const __BACKEND_URL__: string
+
+export const config: RouteConfig = { label: "طلباتي", rank: 12 }
+
+const api = async (path: string, init?: RequestInit) => {
+  const response = await fetch(`${__BACKEND_URL__}${path}`, {
+    credentials: "include",
+    ...init,
+    headers: {
+      ...(init?.body ? { "content-type": "application/json" } : {}),
+      ...(init?.headers || {}),
+    },
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(data.message || `HTTP ${response.status}`)
+  return data
+}
+
+const states = [
+  ["under_review", "قيد المراجعة"],
+  ["processing", "قيد التجهيز"],
+  ["shipping", "قيد التوصيل"],
+  ["delivered", "تم التوصيل"],
+] as const
+
+const statusTone = (value: string) => value === "delivered" ? "success" : value === "under_review" ? "warning" : "info"
+const statusLabel = (value: string) => states.find((state) => state[0] === value)?.[1] || value || "—"
+
+export default function VendorOrders() {
+  const [orders, setOrders] = useState<any[]>([])
+  const [selected, setSelected] = useState<any>(null)
+  const [message, setMessage] = useState("")
+  const [busy, setBusy] = useState(false)
+
+  const load = async () => {
+    const data = await api("/vendor/spike/orders")
+    setOrders(data.orders || [])
+  }
+
+  useEffect(() => { load().catch((error) => setMessage(error.message)) }, [])
+
+  const updateStatus = async (value: string) => {
+    if (!selected) return
+    try {
+      setBusy(true)
+      await api(`/vendor/spike/orders/${selected.id}/status`, {
+        method: "POST",
+        body: JSON.stringify({ status: value }),
+      })
+      setSelected({ ...selected, seller_status: value })
+      setMessage("تم تحديث الحالة وإرسال إشعار للعميل")
+      await load()
+    } catch (error: any) {
+      setMessage(error.message || "تعذر تحديث الحالة")
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return <Page>
+    <PageHeader
+      title="طلباتي"
+      description="تظهر هنا منتجات متجرك فقط. اعتماد الحوالة يتم من إدارة المنصة."
+    />
+
+    {message && <Message>{message}</Message>}
+
+    <Card className="spike-table-card">
+      <div className="spike-responsive-table">
+        <table className="spike-vendor-table">
+          <thead><tr><th>الطلب</th><th>العميل</th><th>حصتك</th><th>الحالة</th><th>إجراء</th></tr></thead>
+          <tbody>
+            {orders.map((order) => <tr key={order.id}>
+              <td>#{order.display_id || order.id}</td>
+              <td>
+                <div>{order.shipping_address?.first_name || order.email || "—"}</div>
+                <small className="spike-muted-text">{order.shipping_address?.phone || ""}</small>
+              </td>
+              <td>{order.seller_subtotal} {order.currency_code}</td>
+              <td><Status tone={statusTone(order.seller_status)}>{statusLabel(order.seller_status)}</Status></td>
+              <td><Button tone="secondary" onClick={() => setSelected(order)}>فتح</Button></td>
+            </tr>)}
+          </tbody>
+        </table>
+        {!orders.length && <Empty>لا توجد طلبات حالياً.</Empty>}
+      </div>
+    </Card>
+
+    {selected && <div className="spike-modal-backdrop" onMouseDown={() => setSelected(null)}>
+      <div className="spike-edit-modal" onMouseDown={(event) => event.stopPropagation()}>
+        <div className="spike-modal-head">
+          <div>
+            <h2>طلب #{selected.display_id || selected.id}</h2>
+            <p>تفاصيل العميل والمنتجات الخاصة بمتجرك.</p>
+          </div>
+          <Button tone="ghost" onClick={() => setSelected(null)}>×</Button>
+        </div>
+
+        <div className="spike-order-detail-grid">
+          <Card className="spike-order-detail-card">
+            <h3>معلومات العميل</h3>
+            <p><b>الاسم:</b> {[selected.shipping_address?.first_name, selected.shipping_address?.last_name].filter(Boolean).join(" ") || "—"}</p>
+            <p><b>الهاتف:</b> {selected.shipping_address?.phone || "—"}</p>
+            <p><b>العنوان:</b> {[selected.shipping_address?.province, selected.shipping_address?.city, selected.shipping_address?.address_1].filter(Boolean).join(" - ") || "—"}</p>
+          </Card>
+
+          <Card className="spike-order-detail-card">
+            <h3>حالة الطلب</h3>
+            <Field label="الحالة الحالية">
+              <select value={selected.seller_status || "under_review"} disabled={busy} onChange={(event) => updateStatus(event.target.value)}>
+                {states.map((state) => <option key={state[0]} value={state[0]}>{state[1]}</option>)}
+              </select>
+            </Field>
+          </Card>
+        </div>
+
+        <Card className="spike-order-items-card">
+          <h3>منتجاتك</h3>
+          <div className="spike-order-items-list">
+            {(selected.items || []).map((item: any) => <div className="spike-order-item-row" key={item.id}>
+              <span>{item.title || "منتج"}</span>
+              <b>× {item.quantity || 1}</b>
+            </div>)}
+          </div>
+        </Card>
+
+        <Actions>
+          {selected.shipping_address?.phone && <a className="spike-secondary-button" href={`https://wa.me/${String(selected.shipping_address.phone).replace(/\D/g, "")}`} target="_blank" rel="noreferrer">واتساب</a>}
+          <Button tone="secondary" onClick={() => setSelected(null)}>إغلاق</Button>
+        </Actions>
+      </div>
+    </div>}
+  </Page>
+}
