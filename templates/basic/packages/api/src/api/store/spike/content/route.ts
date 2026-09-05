@@ -3,10 +3,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 const PUBLIC_KEYS = [
   "marketplace_name",
   "default_currency",
-  "enabled_currencies",
-  "exchange_usd_sar",
-  "exchange_usd_yer_old",
-  "exchange_usd_yer_new",
+  "currencies",
   "cod_enabled",
   "bank_transfer_enabled",
   "bank_accounts",
@@ -30,9 +27,14 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     ? settings.bank_accounts.filter((account: any) => account?.enabled !== false)
     : []
 
+  const currencies = Array.isArray(settings.currencies)
+    ? settings.currencies.filter((currency: any) => currency?.enabled !== false)
+    : []
+
   res.json({
     spike: {
       ...settings,
+      currencies,
       banner_items: banners,
       bank_accounts,
     },
