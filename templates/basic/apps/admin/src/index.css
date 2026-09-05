@@ -47,7 +47,7 @@
 
 :root,
 .dark {
-  --background: #f4f4f4;
+  --background: #ededed;
   --foreground: #090909;
   --card: #ffffff;
   --card-foreground: #090909;
@@ -84,8 +84,9 @@
 
 @layer base {
   * { @apply border-border outline-ring/50; }
-  html { @apply font-sans; direction: rtl; color-scheme: light; }
-  body { @apply bg-background text-foreground; }
+  html { @apply font-sans; direction: rtl; color-scheme: light; background:#ededed; }
+  body { @apply text-foreground; background:#ededed !important; }
+  #root, #root main { background:#ededed !important; }
   button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   input, textarea, select, button { font: inherit; }
 }
