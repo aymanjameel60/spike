@@ -11,11 +11,16 @@
   },
   "dependencies": {
     "@mercurjs/vendor": "2.3.3",
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.2.5",
+    "lucide-react": "^1.41.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "7.18.1"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1"
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.10.1",
+    "tailwindcss": "^4.3.3"
   }
 }
