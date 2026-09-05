@@ -3,21 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-bold transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-3 focus-visible:ring-ring/20",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-bold transition-colors outline-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-3 focus-visible:ring-black/10",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:brightness-95",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-muted",
-        destructive: "bg-destructive text-white hover:brightness-95",
-        ghost: "bg-transparent text-foreground hover:bg-muted",
-        outline: "border border-border bg-white text-foreground hover:bg-muted",
+        default: "bg-black text-white hover:bg-black/90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-[#dfdfdf]",
+        destructive: "bg-destructive text-white hover:bg-destructive/90",
+        ghost: "bg-transparent text-foreground hover:bg-secondary",
+        outline: "border-0 bg-secondary text-foreground hover:bg-[#dfdfdf]",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-lg px-3 text-xs",
+        default: "h-[39px] px-4 py-2",
+        sm: "h-8 px-3 text-xs",
         lg: "h-11 px-6",
-        icon: "size-10 p-0",
+        icon: "size-[39px] p-0",
       },
     },
     defaultVariants: { variant: "default", size: "default" },
@@ -25,7 +25,6 @@ const buttonVariants = cva(
 )
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>
-
 function Button({ className, variant, size, ...props }: Props) {
   return <button data-slot="button" className={cn(buttonVariants({ variant, size }), className)} {...props} />
 }
