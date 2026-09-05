@@ -1,0 +1,49 @@
+{
+  "offers": {
+    "domain": "بيع المنتجات",
+    "subtitle": "حدد المنتج ثم أدخل بيانات البيع",
+    "create": {
+      "header": "إضافة منتج للبيع",
+      "description": "اختر المنتج من كتالوج Spike ثم أدخل السعر والمخزون.",
+      "publish": "حفظ ونشر",
+      "addPrice": "إضافة سعر",
+      "addInventoryItem": "إضافة مخزون",
+      "tabs": {
+        "catalogue": "اختيار المنتج",
+        "stockLevelsAndPrices": "السعر والمخزون"
+      }
+    },
+    "detail": {
+      "offerLabel": "بيانات البيع",
+      "associatedProduct": "المنتج",
+      "shippingConfiguration": "إعداد الشحن",
+      "inventoryItems": "المخزون"
+    },
+    "edit": {
+      "header": "تعديل بيانات البيع",
+      "description": "تعديل السعر والمخزون وإعدادات البيع.",
+      "successToast": "تم تحديث بيانات البيع"
+    },
+    "pricing": {
+      "header": "السعر",
+      "description": "إضافة أو تعديل سعر المنتج.",
+      "empty": "لم يتم تحديد سعر"
+    },
+    "fields": {
+      "sku": "SKU",
+      "variant": "المنتج",
+      "shippingProfile": "إعداد الشحن",
+      "stockStatus": "حالة المخزون",
+      "status": "الحالة",
+      "offer": "بيانات البيع",
+      "priceCurrency": "السعر {{code}}"
+    },
+    "actions": {
+      "create": "إضافة",
+      "manage_prices": "تعديل السعر",
+      "manage_inventory": "تعديل المخزون",
+      "edit_prices": "تعديل السعر",
+      "edit_stock_levels": "تعديل المخزون"
+    }
+  }
+}

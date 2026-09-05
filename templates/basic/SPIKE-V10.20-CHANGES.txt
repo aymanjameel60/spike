@@ -1,0 +1,26 @@
+Spike v10.20
+
+1) Admin product creation removed
+- Deleted apps/admin/src/routes/add-product entirely.
+- /dashboard/add-product is no longer registered after rebuilding the admin dashboard.
+- Product creation remains vendor-only.
+
+2) Admin products + inventory
+- Admin Products now shows all vendor products, not only proposed products.
+- Added seller, status, SKU, stock, creation date, filters and search.
+- Stock is aggregated from variant inventory/location levels when available.
+- Pending products keep approve/reject actions.
+
+3) Checkout completed-cart recovery
+- Prevents repeated "Cart ... is already completed" failures.
+- Attempts to recover the already-created order by cart_id.
+- Clears stale completed cart ids safely without silently creating a duplicate order.
+
+4) UI consistency
+- Added dashboard-wide visual system for Admin and Vendor panels.
+- Unified button radius/height, inputs, selects, textareas, cards, tables, row spacing, status pills and responsive behavior.
+- Applied global vendor styles from main.tsx so every vendor route receives the same UI rules.
+- Added customer UI consistency pass to storefront controls/cards/buttons.
+
+Build note
+- This environment could not complete the Vite build because the uploaded archive does not contain the root Vite/type dependencies required by the workspace build. JavaScript syntax checks passed for the checkout changes.

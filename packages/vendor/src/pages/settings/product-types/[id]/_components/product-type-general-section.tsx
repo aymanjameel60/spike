@@ -1,0 +1,47 @@
+import { PencilSquare, Trash } from "@medusajs/icons"
+import { HttpTypes } from "@medusajs/types"
+import { Container, Heading } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import { ActionMenu } from "@components/common/action-menu"
+import { useDeleteProductTypeAction } from "@pages/settings/product-types/_common/hooks/use-delete-product-type-action"
+
+type ProductTypeGeneralSectionProps = {
+  productType: HttpTypes.AdminProductType
+}
+
+export const ProductTypeGeneralSection = ({
+  productType,
+}: ProductTypeGeneralSectionProps) => {
+  const { t } = useTranslation()
+  const handleDelete = useDeleteProductTypeAction(productType.id)
+
+  return (
+    <Container className="flex items-center justify-between">
+      <Heading>{productType.value}</Heading>
+      <ActionMenu
+        groups={[
+          {
+            actions: [
+              {
+                permission: "product_type:update",
+                label: t("actions.edit"),
+                icon: <PencilSquare />,
+                to: "edit",
+              },
+            ],
+          },
+          {
+            actions: [
+              {
+                permission: "product_type:delete",
+                label: t("actions.delete"),
+                icon: <Trash />,
+                onClick: handleDelete,
+              },
+            ],
+          },
+        ]}
+      />
+    </Container>
+  )
+}

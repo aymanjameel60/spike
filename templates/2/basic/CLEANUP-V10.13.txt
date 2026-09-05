@@ -1,0 +1,26 @@
+SPIKE v10.13 - Lean dashboard pass
+
+Main freeze fix:
+- Removed SidebarBadges MutationObserver from Admin and Vendor.
+- The observer was watching the full document and then mutating the same sidebar DOM it watched; navigation/rerenders could continuously trigger repaint work.
+- Removed the 20-second badge polling layer from the dashboard launch build for now.
+
+Removed frontend-dashboard code that Spike does not use:
+- Vendor Offer custom-field extension (native Offers page is hidden).
+- Vendor Product custom-field extension (native Vendor Products page is hidden; Spike uses My Products).
+- Admin Offer custom-field extension (native Offers page is hidden).
+- Old Admin SpikeProductPriceHelper (unused and contradicted the rule that Admin does not edit seller price).
+- Old unused SpikeLaunchPanel.
+
+Kept intentionally:
+- Mercur/Medusa backend modules and Offer/Inventory/Shipping internals required by ordering.
+- Admin Products/Categories/Collections/Stores/Customers/Promotions/Reviews/Payouts because they map to current Storefront or launch operations.
+- Vendor My Products/Add Product/Orders/Delivery/Reports plus Customers/Promotions/Reviews/Payouts.
+- Native technical pages remain hidden through _navigation.ts. Their backend internals are not deleted because Cart/Offers/Inventory workflows depend on them.
+
+Install:
+1) Copy this package over C:\Users\jamee\Downloads\storm\mercur\templates\basic
+2) Run .\APPLY-SPIKE-V10.13.ps1
+3) bun install
+4) bun run build
+5) bun run dev

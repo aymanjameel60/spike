@@ -1,0 +1,169 @@
+import { PolicyResource } from "../../utils/policy-resources"
+import { PolicyOperation } from "@medusajs/framework/utils"
+import {
+  AuthenticatedMedusaRequest,
+  maybeApplyLinkFilter,
+  MedusaNextFunction,
+  MedusaResponse,
+  MiddlewareRoute,
+} from "@medusajs/framework/http"
+import {
+  validateAndTransformBody,
+  validateAndTransformQuery,
+} from "@medusajs/framework"
+import { createLinkBody } from "@medusajs/medusa/api/utils/validators"
+
+import { vendorStockLocationQueryConfig } from "./query-config"
+import {
+  VendorCreateStockLocation,
+  VendorCreateStockLocationFulfillmentSet,
+  VendorGetStockLocationParams,
+  VendorGetStockLocationsParams,
+  VendorUpdateStockLocation,
+} from "./validators"
+
+const applySellerStockLocationLinkFilter = (
+  req: AuthenticatedMedusaRequest,
+  res: MedusaResponse,
+  next: MedusaNextFunction
+) => {
+  req.filterableFields.seller_id = req.seller_context!.seller_id
+
+  return maybeApplyLinkFilter({
+    entryPoint: "stock_location_seller",
+    resourceId: "stock_location_id",
+    filterableField: "seller_id",
+  })(req, res, next)
+}
+
+export const vendorStockLocationsMiddlewares: MiddlewareRoute[] = [
+  {
+    method: ["GET"],
+    matcher: "/vendor/stock-locations",
+    middlewares: [
+      validateAndTransformQuery(
+        VendorGetStockLocationsParams,
+        vendorStockLocationQueryConfig.list
+      ),
+      applySellerStockLocationLinkFilter,
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.read,
+      },
+    ],
+  },
+  {
+    method: ["POST"],
+    matcher: "/vendor/stock-locations",
+    middlewares: [
+      validateAndTransformBody(VendorCreateStockLocation),
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.create,
+      },
+    ],
+  },
+  {
+    method: ["GET"],
+    matcher: "/vendor/stock-locations/:id",
+    middlewares: [
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.read,
+      },
+    ],
+  },
+  {
+    method: ["POST"],
+    matcher: "/vendor/stock-locations/:id",
+    middlewares: [
+      validateAndTransformBody(VendorUpdateStockLocation),
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.update,
+      },
+    ],
+  },
+  {
+    method: ["DELETE"],
+    matcher: "/vendor/stock-locations/:id",
+    middlewares: [],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.delete,
+      },
+    ],
+  },
+  {
+    method: ["POST"],
+    matcher: "/vendor/stock-locations/:id/sales-channels",
+    middlewares: [
+      validateAndTransformBody(createLinkBody()),
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.update,
+      },
+    ],
+  },
+  {
+    method: ["POST"],
+    matcher: "/vendor/stock-locations/:id/fulfillment-sets",
+    middlewares: [
+      validateAndTransformBody(VendorCreateStockLocationFulfillmentSet),
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.update,
+      },
+    ],
+  },
+  {
+    method: ["POST"],
+    matcher: "/vendor/stock-locations/:id/fulfillment-providers",
+    middlewares: [
+      validateAndTransformBody(createLinkBody()),
+      validateAndTransformQuery(
+        VendorGetStockLocationParams,
+        vendorStockLocationQueryConfig.retrieve
+      ),
+    ],
+    policies: [
+      {
+        resource: PolicyResource.stock_location,
+        operation: PolicyOperation.update,
+      },
+    ],
+  },
+]

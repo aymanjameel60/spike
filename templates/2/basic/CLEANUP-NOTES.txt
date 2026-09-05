@@ -1,0 +1,27 @@
+Spike v10.12 clean audit
+
+Removed from source package:
+- Admin add-product custom route (admin must not create seller products).
+- Legacy /store/spike/checkout/shipping route (temporary-delivery is the single active Spike checkout bridge).
+- node_modules, dist, .medusa and .turbo generated folders.
+- local packages/api/.env (keep your existing .env on your machine; never overwrite it from this package).
+- obsolete v9/v10 patch notes and installers.
+
+Logic kept:
+Admin settings / banners / currencies / commissions / delivery offices -> Vendor products / delivery office assignment -> Admin revision approval -> Storefront live products, collections, discounts and banners -> checkout temporary delivery -> orders / Word shipping document / badges.
+
+Storefront fixes:
+- Live banners now load from /store/spike/content.
+- Collections are image-only 153x101 horizontal cards.
+- Clicking a collection opens only that collection's products.
+- Product discount badge remains global on all product cards.
+- Invalid image strings fall back to placeholder instead of requesting broken paths.
+- Unsupported wishlist calls disabled to remove route/CORS noise.
+- Checkout displays the customer-facing total including temporary delivery fees.
+
+After overlaying source changes:
+1) keep your current packages/api/.env
+2) bun install (only if node_modules is missing)
+3) cd packages/api && bunx medusa db:migrate
+4) cd ../.. && bun run build
+5) bun run dev

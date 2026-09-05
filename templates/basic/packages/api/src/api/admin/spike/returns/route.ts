@@ -1,0 +1,1 @@
+import type{MedusaRequest,MedusaResponse}from'@medusajs/framework/http';export async function GET(req:MedusaRequest,res:MedusaResponse){const s=req.scope.resolve('spike')as any;res.json({returns:await s.listSpikeReturnRequests({}, {take:1000,order:{created_at:'DESC'}})})}

@@ -1,0 +1,5 @@
+import { model } from "@medusajs/framework/utils"
+export const SpikeNotification = model.define("spike_notification", {
+  id: model.id().primaryKey(), audience: model.text(), seller_id: model.text().nullable(), customer_id: model.text().nullable(),
+  type: model.text(), title: model.text(), body: model.text().nullable(), entity_type: model.text().nullable(), entity_id: model.text().nullable(), read: model.boolean().default(false),
+})

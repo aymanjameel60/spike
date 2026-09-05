@@ -1,0 +1,23 @@
+Spike v5 patch
+
+Replaces the previous DOM-injected Spike overlay with Mercur's official file-based panel extension API.
+
+Changed/added:
+- apps/admin/src/main.tsx
+- apps/admin/src/_navigation.ts
+- apps/admin/vite.config.ts
+- apps/admin/src/routes/spike/page.tsx
+- apps/admin/src/spike/SpikeAdminPage.tsx
+- apps/admin/src/spike/spike-admin.css
+- apps/vendor/vite.config.ts
+- packages/api/src/modules/spike/migrations/Migration20260905003000.ts
+
+Old files SpikeLaunchPanel.tsx / SpikeProductPriceHelper.tsx can stay; main.tsx no longer imports them.
+The price helper is intentionally disabled because Mercur's seller-facing price should be handled through Offers, not by blindly editing master-product variant prices.
+
+After copying this patch over templates/basic:
+1) cd packages/api
+2) bunx medusa db:migrate
+3) cd ../..
+4) bun run dev
+5) open http://localhost:7000/dashboard

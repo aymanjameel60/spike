@@ -1,0 +1,3 @@
+import type { MedusaRequest,MedusaResponse } from "@medusajs/framework/http"
+const actor=(req:MedusaRequest)=>(req as any).auth_context?.actor_id||(req as any).auth_context?.auth_identity_id||null
+export async function POST(req:MedusaRequest,res:MedusaResponse){const id=actor(req);if(!id)return res.status(401).json({message:"Unauthorized"});const spike=req.scope.resolve("spike") as any;const rows=await spike.listSpikeNotifications({id:req.params.id},{take:1});const n=rows[0];if(!n||n.audience!=="customer"||(n.customer_id&&String(n.customer_id)!==String(id)))return res.status(404).json({message:"Not found"});const u=await spike.updateSpikeNotifications({id:n.id,read:true});res.json({notification:u})}

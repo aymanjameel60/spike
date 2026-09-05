@@ -1,0 +1,9 @@
+Spike v10.18 architecture pack
+1) Copy/overwrite this package on Mercur basic root.
+2) PowerShell: .\APPLY-SPIKE-V10.18.ps1
+3) cd packages\api
+4) bunx medusa db:migrate
+5) cd ..\..
+6) bun run dev
+
+Main changes: no Admin add-product, independent banners/payment pages, seller-scoped orders, Admin receipt approval, 5% configurable commission, payables, returns, audit log, soft product archive, mandatory delivery office/returnability, seller/store location, in-city/intercity shipping model.
