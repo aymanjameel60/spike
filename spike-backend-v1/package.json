@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun --watch src/server.ts",
     "start": "bun src/server.ts",
-    "create-admin": "bun src/scripts/create-admin.ts"
+    "migrate": "bun src/scripts/migrate.ts",
+    "create-admin": "bun src/scripts/create-admin.ts",
+    "setup": "bun run migrate && bun run create-admin"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.1",
