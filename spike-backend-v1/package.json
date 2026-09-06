@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/server.ts",
-    "start": "bun src/server.ts"
+    "start": "bun src/server.ts",
+    "create-admin": "bun src/scripts/create-admin.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.1",
     "hono": "^4.9.8",
+    "jose": "^6.1.0",
     "pg": "^8.16.3"
   },
   "devDependencies": {
