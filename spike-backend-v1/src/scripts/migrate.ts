@@ -1,0 +1,5 @@
+import { readdir, readFile } from 'node:fs/promises';import { join } from 'node:path';import { db } from '../db';
+await db.query(`create table if not exists spike_migrations(name text primary key, applied_at timestamptz not null default now())`);
+const dir=join(process.cwd(),'database');const files=(await readdir(dir)).filter(x=>x.endsWith('.sql')).sort();
+for(const file of files){const done=await db.query('select 1 from spike_migrations where name=$1',[file]);if(done.rowCount)continue;const sql=await readFile(join(dir,file),'utf8');const client=await db.connect();try{await client.query('begin');await client.query(sql);await client.query('insert into spike_migrations(name) values($1)',[file]);await client.query('commit');console.log(`Applied ${file}`)}catch(e){await client.query('rollback');throw e}finally{client.release()}}
+console.log('Spike migrations complete');await db.end();
